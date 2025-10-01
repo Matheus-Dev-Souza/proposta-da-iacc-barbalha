@@ -1,37 +1,370 @@
-require('dotenv').config();
-const express = require('express');
-const rotas = require('./routes/route');
-const { init: templete } = require('./helpers/templeteHandlebars');
-const bodyParser = require('body-parser');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const flash = require('connect-flash');
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta de Parceria Estratégica | IACC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with a Trustworthy Blue Accent -->
+    <!-- Application Structure Plan: A single-page, narrative scrolling structure was chosen to guide the IACC decision-makers through a compelling story. It starts with the ambitious goal (the "why"), moves to the unique value proposition (the "how"), details the strategic journey and investment (the "what"), and finishes with a clear call to action. This flow is more persuasive and engaging than a static document, using interactive cards and a dynamic chart to encourage exploration and clarify key points, making the proposal more memorable and easier to digest. -->
+    <!-- Visualization & Content Choices: The proposal's key elements were transformed into interactive components. Goal: R$10M -> Inform/Engage -> Animated Number Counter -> Grabs attention. Four Pillars -> Organize -> Interactive Cards (HTML/JS) -> Breaks down the value prop into explorable chunks. Donor Journey -> Organize -> Interactive Timeline (HTML/JS) -> Visualizes the strategic process. Investment Tiers -> Compare -> Chart.js Bar Chart with buttons -> Clarifies the financial model interactively. This approach uses the right tool for each piece of information to maximize clarity and engagement. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 2.5rem;
+        }
+        .pill-button {
+            transition: all 0.3s ease;
+        }
+        .pill-button.active {
+            background-color: #1e3a8a;
+            color: white;
+        }
+        .pill-button:not(.active) {
+            background-color: #e0e7ff;
+            color: #1e3a8a;
+        }
+        .journey-step {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .journey-step.active {
+            background-color: #1e3a8a;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .pillar-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .pillar-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
 
-const app = express();
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-900">Proposta de Parceria Estratégica</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#proposta" class="text-stone-600 hover:text-blue-900">Proposta</a>
+                <a href="#estrategia" class="text-stone-600 hover:text-blue-900">Estratégia</a>
+                <a href="#investimento" class="text-stone-600 hover:text-blue-900">Investimento</a>
+                <a href="#contato" class="text-stone-600 hover:text-blue-900">Próximos Passos</a>
+            </nav>
+        </div>
+    </header>
 
-// Middleware para servir arquivos estáticos (como CSS, JS)
-app.use(express.static(path.join(__dirname, 'assets')));
-app.use(bodyParser.urlencoded({ extended: false }));
+    <main>
+        <section class="text-center py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-blue-900 leading-tight">Uma parceria para construir um sonho.</h2>
+                <p class="mt-4 text-lg md:text-xl text-stone-600">Nosso objetivo: captar os recursos para o novo espaço do IACC.</p>
+                <div class="mt-12 text-6xl md:text-8xl font-extrabold text-amber-600">
+                    <span>R$</span><span id="goal-amount">0</span>
+                </div>
+                <p class="mt-2 text-lg text-stone-500">em arrecadação para a construção</p>
+            </div>
+        </section>
 
-app.use(cookieParser());
+        <section id="proposta" class="py-20 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="section-title text-blue-900">Nossa Proposta Única de Valor</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">Vamos além do serviço. Seremos uma extensão da vossa equipe, com uma estratégia que vai do clique à construção.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="pillar-card bg-white p-8 rounded-xl shadow-lg">
+                        <div class="text-3xl text-amber-600 mb-4">🤝</div>
+                        <h4 class="text-2xl font-bold mb-3 text-blue-900">Parceria Estratégica</h4>
+                        <p class="text-stone-600">Não seremos apenas um fornecedor. Seremos parte da vossa missão, participando ativamente do planejamento para garantir que cada centavo investido trabalhe para o objetivo final.</p>
+                    </div>
+                    <div class="pillar-card bg-white p-8 rounded-xl shadow-lg">
+                        <div class="text-3xl text-amber-600 mb-4">🧱</div>
+                        <h4 class="text-2xl font-bold mb-3 text-blue-900">Estratégia "Do Clique ao Tijolo"</h4>
+                        <p class="text-stone-600">Desenvolveremos uma jornada completa para o doador: da descoberta da causa à fidelização, mostrando o impacto real de cada contribuição e construindo uma comunidade engajada.</p>
+                    </div>
+                    <div class="pillar-card bg-white p-8 rounded-xl shadow-lg">
+                        <div class="text-3xl text-amber-600 mb-4">🎬</div>
+                        <h4 class="text-2xl font-bold mb-3 text-blue-900">Co-criação de Conteúdo</h4>
+                        <p class="text-stone-600">A alma do projeto é a sua história. Propomos criar juntos todo o material audiovisual, garantindo autenticidade, emoção e uma identidade visual coesa que inspira confiança e ação.</p>
+                    </div>
+                    <div class="pillar-card bg-white p-8 rounded-xl shadow-lg">
+                        <div class="text-3xl text-amber-600 mb-4">📈</div>
+                        <h4 class="text-2xl font-bold mb-3 text-blue-900">Investimento Escalável</h4>
+                        <p class="text-stone-600">Nossa remuneração cresce com o projeto. Um modelo transparente e de custo-benefício, desenhado para alinhar nossos interesses ao sucesso total da captação de recursos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-app.use(session({
-    secret: process.env.SECRET, 
-    resave: false,
-    saveUninitialized: true,
-}));
+        <section id="estrategia" class="py-20 md:py-24 bg-blue-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="section-title text-blue-900">A Jornada do Doador</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">Nossa estratégia integrada guia potenciais doadores por um caminho de engajamento claro e impactante. Clique em cada etapa para ver os detalhes.</p>
+                </div>
 
-app.use(flash());
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                    <div id="step-1" class="journey-step bg-white p-6 rounded-lg shadow-md active">
+                        <h4 class="font-bold text-lg">1. Descoberta</h4>
+                    </div>
+                    <div id="step-2" class="journey-step bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="font-bold text-lg">2. Conexão</h4>
+                    </div>
+                    <div id="step-3" class="journey-step bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="font-bold text-lg">3. Conversão</h4>
+                    </div>
+                    <div id="step-4" class="journey-step bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="font-bold text-lg">4. Fidelização</h4>
+                    </div>
+                </div>
 
-// Inicializa o template engine Handlebars
-templete(app);
+                <div id="journey-details" class="mt-12 bg-white p-8 rounded-xl shadow-lg min-h-[150px] flex items-center justify-center">
+                    <div class="text-center">
+                         <h5 class="text-2xl font-bold text-blue-900 mb-2">Descoberta</h5>
+                         <p class="text-stone-600 text-lg">Faremos o IACC ser conhecido por milhares de pessoas com o perfil de doador, através de campanhas de alcance e reconhecimento da marca e do projeto.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-app.use(express.json());
 
-// Define as rotas da aplicação
-app.use(rotas);
+        <section id="investimento" class="py-20 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="section-title text-blue-900">Estrutura de Investimento</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">Um modelo claro e progressivo, desenhado para escalar junto com o sucesso da campanha.</p>
+                </div>
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server rodando na porta ${process.env.PORT || 3000}`);
-});
+                <div class="flex justify-center space-x-4 mb-8">
+                    <button id="btn-fase1" class="pill-button active font-bold py-2 px-6 rounded-full">Fase 1</button>
+                    <button id="btn-fase2" class="pill-button font-bold py-2 px-6 rounded-full">Fase 2</button>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="investmentChart"></canvas>
+                </div>
+                
+                 <div id="investment-details" class="mt-8 text-center max-w-2xl mx-auto">
+                    <h4 class="text-2xl font-bold text-blue-900">Foco da Fase 1</h4>
+                    <p class="text-stone-600 mt-2 text-lg">Validação de públicos, testes de mensagens e construção da base de reconhecimento da campanha de arrecadação.</p>
+                </div>
+
+                <div class="mt-12 text-center text-sm text-stone-500 bg-stone-100 p-4 rounded-lg max-w-3xl mx-auto">
+                    <strong>Observação importante:</strong> A verba de investimento em anúncios (tráfego pago) é de responsabilidade do IACC e não está inclusa na taxa de gestão.
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="py-20 md:py-32 bg-blue-900 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-4xl font-extrabold">Prontos para o próximo passo?</h3>
+                <p class="mt-4 text-lg text-blue-200 max-w-2xl mx-auto">Acreditamos que, com uma estratégia digital bem executada e uma comunicação autêntica, o objetivo de R$ 10 milhões é totalmente alcançável.</p>
+                <div class="mt-10">
+                    <a href="mailto:seuemail@example.com" class="bg-amber-500 hover:bg-amber-600 text-blue-900 font-bold py-4 px-8 rounded-lg text-lg transition-transform transform hover:scale-105 inline-block">
+                        Agendar uma conversa
+                    </a>
+                </div>
+                <p class="mt-6 text-blue-300">Vamos detalhar o plano de ação para os primeiros 30 dias e dar início a esta parceria transformadora.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white py-8">
+        <div class="container mx-auto px-6 text-center text-stone-500">
+            <p>&copy; 2025 | Proposta desenvolvida por [Seu Nome/Nome da Sua Empresa]</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const goalAmount = 10000000;
+            const goalElement = document.getElementById('goal-amount');
+            
+            function animateValue(obj, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const currentVal = Math.floor(progress * (end - start) + start);
+                    obj.innerHTML = currentVal.toLocaleString('pt-BR');
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting){
+                        animateValue(goalElement, 0, goalAmount, 2000);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            observer.observe(goalElement);
+
+            const journeySteps = document.querySelectorAll('.journey-step');
+            const journeyDetailsContainer = document.getElementById('journey-details');
+            const journeyData = {
+                'step-1': {
+                    title: 'Descoberta',
+                    text: 'Faremos o IACC ser conhecido por milhares de pessoas com o perfil de doador, através de campanhas de alcance e reconhecimento da marca e do projeto.'
+                },
+                'step-2': {
+                    title: 'Conexão',
+                    text: 'Contaremos a história do IACC de forma emocionante e transparente, gerando uma conexão profunda com a causa através de vídeos, testemunhos e histórias de impacto.'
+                },
+                'step-3': {
+                    title: 'Conversão',
+                    text: 'Criaremos caminhos simples, seguros e eficazes para que as doações aconteçam, seja por valores pontuais ou recorrentes, otimizando a página de doação.'
+                },
+                'step-4': {
+                    title: 'Fidelização',
+                    text: 'Manteremos os doadores informados sobre o progresso do projeto, mostrando o impacto real da sua contribuição e incentivando o apoio contínuo para construir uma comunidade.'
+                }
+            };
+            
+            journeySteps.forEach(step => {
+                step.addEventListener('click', () => {
+                    journeySteps.forEach(s => s.classList.remove('active'));
+                    step.classList.add('active');
+                    const data = journeyData[step.id];
+                    journeyDetailsContainer.innerHTML = `
+                        <div class="text-center">
+                            <h5 class="text-2xl font-bold text-blue-900 mb-2">${data.title}</h5>
+                            <p class="text-stone-600 text-lg">${data.text}</p>
+                        </div>
+                    `;
+                });
+            });
+
+            const ctx = document.getElementById('investmentChart').getContext('2d');
+            const investmentData = {
+                labels: ['Fase 1 (Até R$5k)', 'Fase 2 (Até R$10k)'],
+                datasets: [
+                    {
+                        label: 'Investimento em Anúncios',
+                        data: [5000, 10000],
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#1e40af',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        barPercentage: 0.6,
+                    },
+                    {
+                        label: 'Taxa de Gestão',
+                        data: [500, 1000],
+                        backgroundColor: '#fbbf24',
+                        borderColor: '#d97706',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        barPercentage: 0.6,
+                    }
+                ]
+            };
+
+            const investmentChart = new Chart(ctx, {
+                type: 'bar',
+                data: investmentData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return 'R$ ' + (value/1000) + 'k';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const btnFase1 = document.getElementById('btn-fase1');
+            const btnFase2 = document.getElementById('btn-fase2');
+            const investmentDetails = document.getElementById('investment-details');
+            
+            function updateInvestmentView(fase) {
+                if (fase === 1) {
+                    btnFase1.classList.add('active');
+                    btnFase2.classList.remove('active');
+                    investmentDetails.innerHTML = `
+                        <h4 class="text-2xl font-bold text-blue-900">Foco da Fase 1</h4>
+                        <p class="text-stone-600 mt-2 text-lg">Validação de públicos, testes de mensagens e construção da base de reconhecimento da campanha de arrecadação.</p>
+                    `;
+                    investmentChart.data.datasets.forEach((dataset) => {
+                        dataset.backgroundColor = dataset.label === 'Taxa de Gestão' ? ['#fbbf24', '#fde68a'] : ['#3b82f6', '#93c5fd'];
+                    });
+                } else {
+                    btnFase1.classList.remove('active');
+                    btnFase2.classList.add('active');
+                    investmentDetails.innerHTML = `
+                        <h4 class="text-2xl font-bold text-blue-900">Foco da Fase 2</h4>
+                        <p class="text-stone-600 mt-2 text-lg">Escala das campanhas validadas, otimização contínua e aprofundamento na captação de doadores recorrentes.</p>
+                    `;
+                    investmentChart.data.datasets.forEach((dataset) => {
+                        dataset.backgroundColor = dataset.label === 'Taxa de Gestão' ? ['#fde68a', '#fbbf24'] : ['#93c5fd', '#3b82f6'];
+                    });
+                }
+                investmentChart.update();
+            }
+
+            btnFase1.addEventListener('click', () => updateInvestmentView(1));
+            btnFase2.addEventListener('click', () => updateInvestmentView(2));
+            
+            updateInvestmentView(1);
+        });
+    </script>
+</body>
+</html>
