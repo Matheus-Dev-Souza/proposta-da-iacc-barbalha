@@ -33,13 +33,13 @@ graph TD
     end
 
     %% Segunda versão do fluxo
-    subgraph Pré-Pré-Lançamento (PPL)
+    subgraph Pré-Pré-Lançamento_PPL
         A2[Começo: Despertar a Atenção] --> B2{Identificar a "dor" do público};
         B2 --> C2[Coletar provas sociais e interesse];
         C2 --> D2[Anunciar a data do evento de pré-lançamento];
     end
 
-    subgraph Pré-Lançamento (PL)
+    subgraph Pré-Lançamento_PL
         D2 --> E2[Liberação do CPL 1: A Oportunidade];
         E2 --> F2{Apresentar a grande oportunidade e a promessa};
         F2 --> G2[Liberação do CPL 2: A Jornada da Transformação];
@@ -48,7 +48,7 @@ graph TD
         I2 --> J2{Entregar uma parte da solução e mostrar os benefícios};
     end
 
-    subgraph Lançamento (Abertura do Carrinho)
+    subgraph Lançamento_Abertura_do_Carrinho
         J2 --> K2[Abertura Oficial das Inscrições/Vendas];
         K2 --> L2{Oferta com gatilhos mentais (escassez, urgência, bônus)};
         L2 --> M2[Pico de vendas no primeiro dia];
@@ -56,7 +56,7 @@ graph TD
         N2 --> O2[Anúncio do Encerramento das Vendas];
     end
 
-    subgraph Pós-Lançamento
+    subgraph Pós-Lançamento_2
         O2 --> P2[Boas-vindas e entrega do produto];
         P2 --> Q2{Suporte e engajamento com os novos alunos/clientes};
         Q2 --> R2[Análise das métricas e preparação para o próximo];
