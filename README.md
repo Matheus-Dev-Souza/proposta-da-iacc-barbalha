@@ -1,3 +1,6 @@
+## 🚀 Fluxo de Lançamento
+
+```mermaid
 graph TD
     subgraph Pré-Pré-Lançamento
         A[Início: Gerar Curiosidade] --> B{Sondar o interesse da audiência};
@@ -29,33 +32,33 @@ graph TD
         R --> S[Início do relacionamento com quem não comprou];
     end
 
-    graph TD
+    %% Segunda versão do fluxo
     subgraph Pré-Pré-Lançamento (PPL)
-        A[Começo: Despertar a Atenção] --> B{Identificar a "dor" do público};
-        B --> C[Coletar provas sociais e interesse];
-        C --> D[Anunciar a data do evento de pré-lançamento];
+        A2[Começo: Despertar a Atenção] --> B2{Identificar a "dor" do público};
+        B2 --> C2[Coletar provas sociais e interesse];
+        C2 --> D2[Anunciar a data do evento de pré-lançamento];
     end
 
     subgraph Pré-Lançamento (PL)
-        D --> E[Liberação do CPL 1: A Oportunidade];
-        E --> F{Apresentar a grande oportunidade e a promessa};
-        F --> G[Liberação do CPL 2: A Jornada da Transformação];
-        G --> H{Mostrar como a transformação acontece e provar que é possível};
-        H --> I[Liberação do CPL 3: A Amostra da Solução];
-        I --> J{Entregar uma parte da solução e mostrar os benefícios};
+        D2 --> E2[Liberação do CPL 1: A Oportunidade];
+        E2 --> F2{Apresentar a grande oportunidade e a promessa};
+        F2 --> G2[Liberação do CPL 2: A Jornada da Transformação];
+        G2 --> H2{Mostrar como a transformação acontece e provar que é possível};
+        H2 --> I2[Liberação do CPL 3: A Amostra da Solução];
+        I2 --> J2{Entregar uma parte da solução e mostrar os benefícios};
     end
 
     subgraph Lançamento (Abertura do Carrinho)
-        J --> K[Abertura Oficial das Inscrições/Vendas];
-        K --> L{Oferta com gatilhos mentais (escassez, urgência, bônus)};
-        L --> M[Pico de vendas no primeiro dia];
-        M --> N[Conteúdo para quebrar objeções e lives];
-        N --> O[Anúncio do Encerramento das Vendas];
+        J2 --> K2[Abertura Oficial das Inscrições/Vendas];
+        K2 --> L2{Oferta com gatilhos mentais (escassez, urgência, bônus)};
+        L2 --> M2[Pico de vendas no primeiro dia];
+        M2 --> N2[Conteúdo para quebrar objeções e lives];
+        N2 --> O2[Anúncio do Encerramento das Vendas];
     end
 
     subgraph Pós-Lançamento
-        O --> P[Boas-vindas e entrega do produto];
-        P --> Q{Suporte e engajamento com os novos alunos/clientes};
-        Q --> R[Análise das métricas e preparação para o próximo];
-        R --> S[Continuar o relacionamento com a lista de e-mails];
+        O2 --> P2[Boas-vindas e entrega do produto];
+        P2 --> Q2{Suporte e engajamento com os novos alunos/clientes};
+        Q2 --> R2[Análise das métricas e preparação para o próximo];
+        R2 --> S2[Continuar o relacionamento com a lista de e-mails];
     end
